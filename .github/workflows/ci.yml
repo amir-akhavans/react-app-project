@@ -1,0 +1,18 @@
+name: CI 
+on:
+  pull_request:
+    branches: [develop]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: npm ci                     # Similar to npm install but more proper for CI environments https://docs.npmjs.com/cli/v8/commands/npm-ci
+      - run: npm run format:check       # Runs Code Formatting 
+      - run: npm test -- --coverage     # Generates Code test coverage , next upload Code Coverage as an Artifact
+        env:
+          CI: true                      # To avoid interactive terminal environment
