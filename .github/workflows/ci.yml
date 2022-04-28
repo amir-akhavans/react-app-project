@@ -42,7 +42,8 @@ jobs:
         if: github.event_name == 'push'    # runs if pull request is approved and merged so we can build 
         run:  npm run build
 
-      - name: Upload Build Folder      
+      - name: Upload Build Folder   
+        if: github.event_name == 'push'   
         uses: actions/upload-artifact@v1
         with:
           name: build
