@@ -1,0 +1,33 @@
+name: CI 
+on:
+  pull_request:
+    branches: [develop]
+
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: npm ci                     # Similar to npm install but more proper for CI environments https://docs.npmjs.com/cli/v8/commands/npm-ci
+      - run: npm run format:check       # Runs Code Formatting 
+      - run: npm test -- --coverage     # Generates Code test coverage , in next step ( Build Project ) workflow Code Coverage will be uploaded as an Artifact
+        env:
+          CI: true                      # To avoid interactive terminal environment
+
+      - name: Build Project
+        if: github.event_name == 'push'    # runs if pull request is approved and merged so we can build 
+        run:  npm run build
+
+      - name: Deploy to Staging
+        if: github.event_name == 'push' 
+        run: npx surge --project ./build  --domain silent-apparatus.surge.sh  # dimain given by surge, if you forgot it you can find using command: surge list. dmain entered manually to avoide interactive command.
+        env:                                        # Enter username and password in secrets to login surge manually
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}  # if you forgot the given username, you can enter this command: surge whoami
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}  # if you forgot the given token, you can enter this command: surge token
