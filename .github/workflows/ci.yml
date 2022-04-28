@@ -20,7 +20,7 @@ jobs:
                                     # eg when npm dependencies are changed new cache will be generated. npm dependencies are stored in package-lock.json file
           restore_keys: |  # Restore keys are extra keys that github uses to search for caches if can not find caches using the key above
             ${{ runner.os }}-node-
-            
+
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
@@ -31,10 +31,24 @@ jobs:
       - run: npm test -- --coverage     # Generates Code test coverage , in next step ( Build Project ) workflow Code Coverage will be uploaded as an Artifact
         env:
           CI: true                      # To avoid interactive terminal environment
-
+      
+      - name: Upload Test Coverage      # This step ( upload artifact) should run after test step
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: coverage 
+      
       - name: Build Project
         if: github.event_name == 'push'    # runs if pull request is approved and merged so we can build 
         run:  npm run build
+
+      - name: Upload Build Folder      
+        uses: actions/upload-artifact@v1
+        with:
+          name: build
+          path: build
+
+      - uses: actions/download-artifact  # Takes name of the artifact and download it to the workspace
 
       - name: Deploy to Staging
         if: github.event_name == 'push' 
