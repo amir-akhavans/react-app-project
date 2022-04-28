@@ -1,10 +1,10 @@
 name: CI 
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, master]
 
   push:
-    branches: [develop]
+    branches: [develop, master]
 
 jobs:
   build:
@@ -51,9 +51,15 @@ jobs:
 
       - uses: actions/download-artifact  # Takes name of the artifact and download it to the workspace
 
+      - name: Create a Relese            # Creates a new release in github only when is PUSH to MASTER branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npx semantic-release    
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy to Staging
         if: github.event_name == 'push' 
         run: npx surge --project ./build  --domain silent-apparatus.surge.sh  # dimain given by surge, if you forgot it you can find using command: surge list. dmain entered manually to avoide interactive command.
         env:                                        # Enter username and password in secrets to login surge manually
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}  # if you forgot the given username, you can enter this command: surge whoami
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}  # if you forgot the given token, you can enter this command: surge token
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}   # if you forgot the given username, you can enter this command: surge whoami
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}   # if you forgot the given token, you can enter this command: surge token
