@@ -49,6 +49,12 @@ jobs:
           name: build
           path: build
 
+      - name: ZIP Assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |                           # zip input is all inside build  ( ./build ) directory to build.zip file 
+          zip -r build.zip ./build      
+          zip -r coverage.zip ./coverage
+
       - uses: actions/download-artifact  # Takes name of the artifact and download it to the workspace
 
       - name: Create a Relese            # Creates a new release in github only when is PUSH to MASTER branch
