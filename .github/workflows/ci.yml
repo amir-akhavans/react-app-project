@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:          # Changed the env viarbles's location from staging and production to jobs to give them global scope                             
+      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}   
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}   
+
     steps:
       - uses: actions/checkout@v2 
 
@@ -64,8 +69,22 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to Staging
-        if: github.event_name == 'push' 
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: npx surge --project ./build  --domain silent-apparatus.surge.sh  # dimain given by surge, if you forgot it you can find using command: surge list. dmain entered manually to avoide interactive command.
-        env:                                        # Enter username and password in secrets to login surge manually
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}   # if you forgot the given username, you can enter this command: surge whoami
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}   # if you forgot the given token, you can enter this command: surge token
+    #   env:                                        # Enter username and password in secrets to login surge manually
+    #     SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}   # if you forgot the given username, you can enter this command: surge whoami
+    #     SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}   # if you forgot the given token, you can enter this command: surge token
+
+      - name: Deploy to Production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npx surge --project ./build  --domain vague-toothpaste.surge.sh  
+  #     env:                                       
+  #       SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}   
+  #       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}   
+
+      - name: Upload Coverage Reports
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npx codecov
+        env:
+          CODECOV_TOKEN : ${{ secrets.CODECOV_TOKEN }}
+          
