@@ -66,7 +66,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx semantic-release    
         env:
-          COSTUM_TOKEN: ${{ secrets.COSTUM_TOKEN }}  # Release token should differ from github token ( GITHUB_TOKEN)
+          COSTUM_TOKEN: ${{ secrets.COSTUM_TOKEN }}  # Release token should differ from github token ( GITHUB_TOKEN), if not, the username in release won't be shown
 
       - name: Deploy to Staging
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
@@ -87,6 +87,20 @@ jobs:
         run: npx codecov
         env:
           CODECOV_TOKEN : ${{secrets.CODECOV_TOKEN}}
-          
+
+      - name: Open Issue
+        if: failure() && github.event_name == 'pull_request'                    # if the previous steps fails it runs
+        run: |    # assigmees: array of people we want to assign to this issue ( The user who commited and reported this issue )n
+          echo ${{ github.actor }}
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/issues \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "Automated issue for commit: ${{ github.sha }}",
+            "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_." ,
+            "assignees":["${{ github.actor }}"]     
+            }' \
+          --fail 
 
         
