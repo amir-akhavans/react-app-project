@@ -1,6 +1,9 @@
 ![](https://github.com/amir-akhavans/react-app-project/workflows/CI/badge.svg?branch=develop&event=push)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 417bb32b3f7653537fb1aa31b7b97a5b6d4fdf07
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
