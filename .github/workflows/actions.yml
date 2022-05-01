@@ -8,5 +8,6 @@ jobs:
         id: hello
         with:
           who-to-greet: "world"
-      - run: |
+      - run: |                                      # $HELLO Environment Variable value defined in index.js
           echo "Time: ${{ steps.hello.outputs.time }}"
+          echo $HELLO         
