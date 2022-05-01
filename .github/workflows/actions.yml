@@ -4,7 +4,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2                   # We have to first checkout to access the folders 
-      - uses: ./.github/actions/hello
+      - uses: ./.github/actions/issue
+        id: issue
+        with:                                       # Inputs
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Title
+          body: Body
+          assignees: |                              # users who we want to assign this issue
+            amir-akhavans
+    #       alialaa
+      - run: |
+          echo ${{ steps.issue.outputs.issue }}
+
+ #    - uses: ./.github/actions/hello
+
         id: hello
         with:
           who-to-greet: "world"
