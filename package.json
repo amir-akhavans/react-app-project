@@ -55,4 +55,9 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   }
+  "devDependencies": {
+    "@vercel/ncc": "^0.33.4"
+  }  
 }
+  
+

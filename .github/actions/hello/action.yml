@@ -1,0 +1,14 @@
+name: Hello World
+author: Amir Akhavan
+description: Some Description
+inputs:
+  who-to-greet:
+    description: 'who to greet'
+    required: true
+    default: Amir 
+outputs:
+  time:
+    description: 'The Greeting Time'
+runs:                                  # Specifies whether the actions id docker action or js action
+  using: "node12"
+  main: "index.js"
