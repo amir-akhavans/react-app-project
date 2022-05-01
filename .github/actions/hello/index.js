@@ -19,7 +19,7 @@ try {
     console.log(JSON.stringify(github, null, '\t'));
     core.endGroup();
 
-    core.exportVariable("HELLO", "hello");  // Set Environment Variables   ---->  HELLO: hello
+    core.exportVariable("HELLO", "hello");                 // Set Environment Variables   ---->  HELLO: hello
 
 }   catch (error) {
 
