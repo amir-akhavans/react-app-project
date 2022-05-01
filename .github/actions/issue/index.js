@@ -11,14 +11,14 @@ try {
     const response = octokit.issues.create({
    //   owner: github.context.repo.owner,
    //   repo: github.context.repo.repo,
-        ...github.context.repo,                          // This line is equal to two above lines
-        title,                                           // if key is equal to value, we pass just the key   ( title: tile )
-        body,
-        assignees: assignees ? assignees.split('\n') : undefined  // creates array of assigness, otherwise passes undefined to ignore it
-    }) 
+      ...github.context.repo,                          // This line is equal to two above lines
+      title,                                           // if key is equal to value, we pass just the key   ( title: tile )
+      body,
+      assignees: assignees ? assignees.split('\n') : undefined  // creates array of assigness, otherwise passes undefined to ignore it
+    }); 
     
-    core.setOutput('issue', JSON.stringify(response.data))        // JSON.stringify() passes the output as string
+    core.setOutput("issue", JSON.stringify(response.data));        // JSON.stringify() passes the output as string
   
-} catch (error) {
+}   catch (error) {
     core.setFailed(error.message);
 }
